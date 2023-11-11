@@ -343,7 +343,6 @@ void enterStudentInfo (Student *x, int n)
     enterStudentCodes(x+i, ng[i], 1);
   }
   free(ng);
-  
   // enterBirthDate (x->birthDate);
 }
 
@@ -365,9 +364,8 @@ int main ()
   while (1)
   {
     printf("\t*-------------------Management Student------------------*\n");
-    printf("\t| 1. Enter list of student\t\t\t\t|\n");
+    printf("\t| 1. Add new students\t\t\t\t|\n");
     printf("\t| 2. Display the list of student\t\t\t|\n");
-    printf("\t| 3. Add new student information\t\t\t|\n");
     printf("\t| 4. Search student\t\t\t\t\t|\n");
     printf("\t| 5. Delete student's information\t\t\t|\n");
     printf("\t| 6. Delete a student\t\t\t\t\t|\n");
