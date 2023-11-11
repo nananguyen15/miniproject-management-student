@@ -20,7 +20,7 @@ void checkValidSelection (int *select);
 void checkValidNumberOfStudent (int *n);
 void enterStudentInfo (Student *x,int n);
   void EnterFullName (int n, char fullName[][100]);
-    int isValidName(char* str);
+    int isValidName(char name[]);
   int* chooseFieldStudy(Student x[], int n);
   void enterClassName (Student *s, int n);
   void removeSpaces(char* str);
@@ -366,11 +366,11 @@ int main ()
     printf("\t*-------------------Management Student------------------*\n");
     printf("\t| 1. Add new students\t\t\t\t|\n");
     printf("\t| 2. Display the list of student\t\t\t|\n");
-    printf("\t| 4. Search student\t\t\t\t\t|\n");
-    printf("\t| 5. Delete student's information\t\t\t|\n");
-    printf("\t| 6. Delete a student\t\t\t\t\t|\n");
-    printf("\t| 7. Sort student\t\t\t\t\t|\n");
-    printf("\t| 8. Exit\t\t\t\t\t\t|\n");
+    printf("\t| 3. Search student\t\t\t\t\t|\n");
+    printf("\t| 4. Delete student's information\t\t\t|\n");
+    printf("\t| 5. Delete a student\t\t\t\t\t|\n");
+    printf("\t| 6. Sort student\t\t\t\t\t|\n");
+    printf("\t| 7. Exit\t\t\t\t\t\t|\n");
     printf("\t*-------------------------------------------------------*\n");
     printf("\n");
 
@@ -393,8 +393,7 @@ int main ()
       // case 4:
       // case 5:
       // case 6:
-      // case 7
-      // case 8:
+      // case 7:
       //   return 0;
     }
   }
