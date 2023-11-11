@@ -209,13 +209,16 @@ int chooseFieldStudy(Student* h)
   } while(c < 1 || c > 3);
   return c;
 }
-void enterClassName (Student *s, int n) 
-{
-  while (1)
-  {
-    printf("Enter student's class ");
-  }
-}
+
+// void enterClassName (Student *s, int n) 
+// {
+//   while (1)
+//   {
+//     printf("Enter student's class ");
+//   }
+// }
+
+
 // void enterStudentCode(Student* h,int ng)
 // {
 //   char*studentCode = h->studentCode;
@@ -269,7 +272,7 @@ void enterStudentInfo (Student *x, int n)
   EnterFullName(n,x->fullName); 
   chooseFieldStudy (x->fieldStudy);
   // enterStudentCode (x->studentCode);
-  enterClassName (x->className,n);
+  // enterClassName (x->className,n);
 }
 void displayStudentInfo (Student x, int n)
 {
