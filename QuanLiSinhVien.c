@@ -210,14 +210,14 @@ int chooseFieldStudy(Student* h)
   return c;
 }
 
-// void enterClassName (Student *s, int n) 
-// {
-//   while (1)
-//   {
-//     printf("Enter student's class ");
-//   }
-// }
+void enterClassName (Student *s, int n) 
+{
+  while (1)
+  {
+    printf("Enter student's class ");
 
+  }
+}
 
 // void enterStudentCode(Student* h,int ng)
 // {
@@ -267,19 +267,23 @@ int chooseFieldStudy(Student* h)
 //   }
 // }
 
+
 void enterStudentInfo (Student *x, int n)
 {
   EnterFullName(n,x->fullName); 
   chooseFieldStudy (x->fieldStudy);
   // enterStudentCode (x->studentCode);
   // enterClassName (x->className,n);
+  // enterBirthDate (x->birthDate);
 }
 void displayStudentInfo (Student x, int n)
 {
   for (int i = 0; i < n; i++) {
   printf("\t%s\n",x.fullName[i]);
   printf("\t%s\n",x.fieldStudy[i]);
-  printf("\t%s\n",x.studentCode[i]);
+  // printf("\t%s\n",x.className[i]);
+  // printf("\t%s\n",x.studentCode[i]);
+  // printf("\t%s\n",x.birthDate[i]);
   }
 }
 
