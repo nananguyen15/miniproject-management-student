@@ -16,12 +16,14 @@ struct Student
 };
 typedef struct Student Student;
 
-
 void checkValidSelection (int *select);
 void checkValidNumberOfStudent (int *n);
 void enterStudentInfo (Student *x,int n);
   void EnterFullName (int n, char fullName[][100]);
     int isValidName(char* str);
+  int* chooseFieldStudy(Student x[], int n);
+  void enterClassName (Student *s, int n);
+  void removeSpaces(char* str);
 
 void checkValidNumberOfStudent (int *n) 
 {
@@ -99,7 +101,7 @@ void checkValidSelection (int *select)
       printf("The number you entered is too large !\nPlease enter a number from 1 to 7.\n\n");
       continue;
     }
-    else if (temp <= 0 || temp >7)
+    else if (temp <= 0 || temp >8)
     {
       printf("Please choose number in the menu.\n\n");
       continue;
@@ -164,7 +166,6 @@ void EnterFullName (int n, char fullName[][100])
       printf("Student %d: ", i+1);
       fgets(fullName[i], sizeof(fullName[i]), stdin);
       fullName[i][strcspn(fullName[i], "\n")] = 0; // remove the newline character at the end
-
       if (isValidName(fullName[i]) == 1) {
         break;
       }
@@ -172,117 +173,186 @@ void EnterFullName (int n, char fullName[][100])
   }
 }
 
-int chooseFieldStudy(Student* h)
+int* chooseFieldStudy(Student x[], int n)
 {
-  int c;
-  int result;
-  printf("\n-----List of the majors-----:\n");
-  printf("\t1.KTPM\n\t2.MS\n\t3.NNA");
-  do 
+  int* fieldChoices = malloc(n * sizeof(int));
+  for(int i = 0; i < n; i++)
   {
-    printf("\nPleases enter your choice: ");
-    result=  scanf("%d",&c);
-    // Clear the input buffer
-    while (getchar() != '\n');
-    if (result == EOF) 
+    int c;
+    int result;
+    printf("\n\t*-------List of the majors------*\n");
+    printf("\t| 1. KTPM\t\t\t|\n");
+    printf("\t| 2. MS\t\t\t\t|\n");
+    printf("\t| 3. NNA\t\t\t\t|\n");
+    printf("\t*-------------------------------*\n");
+    do 
     {
-      printf("Invalid input.\nPlease enter a number.\n\n");
-      continue;
-    }
-    switch(c) {
-    case 1:
-        printf("The subject: KTPM - Ky Thuat Phan Mem");
-        strcpy(h->fieldStudy, "KTPM");
-        break;
-    case 2:
-        printf("The subject: MS - Marketing So");
-        strcpy(h->fieldStudy, "MS");
-        break;
-    case 3:
-        printf("The subject: NNA - Ngon Ngu Anh");
-        strcpy(h->fieldStudy, "NNA");
-        break;
-    default:
-        printf("Invalid input.");
+      printf("\nPleases enter your choice for student %d: ", i+1);
+      result =  scanf("%d",&c);
+      // Clear the input buffer
+      while (getchar() != '\n');
+      if (result == EOF)
+      {
+        printf("Invalid input.\nPlease enter a number.\n\n");
         continue;
-    }
-  } while(c < 1 || c > 3);
-  return c;
+      }
+      switch(c) {
+      case 1:
+          printf("\nThe subject: KTPM - Ky Thuat Phan Mem\n");
+          strcpy(x[i].fieldStudy, "KTPM");
+          break;
+      case 2:
+          printf("\nThe subject: MS - Marketing So\n");
+          strcpy(x[i].fieldStudy, "MS");
+          break;
+      case 3:
+          printf("\nThe subject: NNA - Ngon Ngu Anh\n");
+          strcpy(x[i].fieldStudy, "NNA");
+          break;
+      default:
+          printf("Invalid input.");
+          continue;
+      }
+    } while(c < 1 || c > 3);
+    fieldChoices[i] = c;
+  }
+  return fieldChoices;
 }
 
 void enterClassName (Student *s, int n) 
 {
+  char class[1000];
+  int valid = 1;
+  printf("**NOTE:\n");
+  printf("- If student's field study is KTPM (Ky Thuat Phan Mem), 2 first character student's class name will be SE\n");
+  printf("- If student's field study is MS (Maketing So), 2 first character student's class name will be DM\n");
+  printf("- If student's field study is NNA (Ngon Ngu Anh), 2 first character student's class name will be EL\n");
   while (1)
   {
-    printf("Enter student's class ");
-
+    printf("\n\nEnter student's class ");
+    scanf("%d",&class);
+    while(getchar() != '\n');
+    removeSpaces(class);
+    //Kiem tra do dai = 6 hay ko 
+    if (strlen(class)!=6) 
+    {
+      printf("Invalid input. The class must have exactly 6 characters.\n\n");
+      valid =0;
+      continue;
+    }
+    //Kiem tra 2 ki tu dau tien co phai la chu cai 
+    else if (!isalpha(class[0]) && !isalpha(class[1])) 
+    {
+      printf("Invalid input. The first character must be letters.\n\n");
+      valid = 0;
+      continue;
+    }
+    //Kiem tra 4 ki tu con lai la chu so
+    for (int i=2; i<strlen(class)-1; i++)
+    {
+      if (!isdigit(class[i])) printf("Invalid input. The last 4 character must be digits.\n\n");
+      valid = 0;
+      continue;
+    }
+    //Kiem tra xem co nhap ten lop dung chuyen nganh ko 
+    if (valid)
+    {
+      if ((strcmp(s->fieldStudy, "KTPM") ==0 && strncmp(class,"SE",2)!=0)|| (strcmp(s->fieldStudy, "MS") ==0 && strncmp(class,"DM",2)!=0) || (strcmp (s->fieldStudy, "NNA")==0 && strncmp(class,"EL",2)!=0))
+      {
+        printf("You enter wrong student class. It different from student's study field.\n\n");
+        continue;
+      }
+      else 
+      {
+        class[0] = toupper(class[0]);
+        class[1] = toupper(class[1]);
+        // If the input is valid, copy it to the student's class
+        strcpy(s->className, class);
+        break;
+      }
+    }
   }
 }
 
-// void enterStudentCode(Student* h,int ng)
-// {
-//   char*studentCode = h->studentCode;
+void removeSpaces(char* str)
+{
+    int count = 0;
+    for (int i = 0; str[i]; i++)
+        if (str[i] != ' ')
+            str[count++] = str[i];
+    str[count] = '\0';
+}
 
-//   while(1)
-//   {
-//   printf("\nEnter MSSV: ");
-//   scanf("%[^\n]s",studentCode);
-//   getchar();
-//   removeSpaces(studentCode);
-//   //viết hoa
-//   for(int i = 0; studentCode[i]; i++){
-//       studentCode[i] = toupper(studentCode[i]);
-//   }
-//   if(strlen(studentCode)==8)
-//   {
-//     if(isalpha(studentCode[0]) && isalpha(studentCode[1]) && studentCode[1]=='E')
-//     {
-//       int valid = 1;
-//       switch(ng)
-//       {
-//         case 1:
-//           if(studentCode[0]!='C') valid = 0;
-//           break;
-//         case 2 :
-//           if(studentCode[0]!='B') valid = 0;
-//           break;
-//         case 3 :
-//           if(studentCode[0]!='L') valid = 0;
-//           break;
-//         default:
-//           valid = 0;
-//       }
-//       for(int i=2;i<strlen(studentCode);i++)
-//       {
-//         if(!isdigit(studentCode[i]))
-//         {
-//           valid = 0;
-//           break;
-//         }
-//       }
-//       if(valid) break;
-//     }
-//   }
-//   printf("Invalid input. Please enter again.\n");
-//   }
-// }
-
+void enterStudentCodes(Student* h, int ng, int n)
+{
+  for(int j = 0; j < n; j++)
+  {
+    char* studentCode = h[j].studentCode;
+    while(1)
+    {
+      printf("\nEnter MSSV for student %d: ", j+1);
+      scanf("%[^\n]s", studentCode);
+      getchar();
+      removeSpaces(studentCode);
+      //viết hoa
+      for(int i = 0; studentCode[i]; i++){
+          studentCode[i] = toupper(studentCode[i]);
+      }
+      if(strlen(studentCode)==8)
+      {
+        if(isalpha(studentCode[0]) && isalpha(studentCode[1]) && studentCode[1]=='E')
+        {
+          int valid = 1;
+          switch(ng)
+          {
+            case 1:
+              if(studentCode[0]!='C') valid = 0;
+              break;
+            case 2 :
+              if(studentCode[0]!='B') valid = 0;
+              break;
+            case 3 :
+              if(studentCode[0]!='L') valid = 0;
+              break;
+            default:
+              valid = 0;
+          }
+          for(int i=2;i<strlen(studentCode);i++)
+          {
+            if(!isdigit(studentCode[i]))
+            {
+              valid = 0;
+              break;
+            }
+          }
+          if(valid) break;
+        }
+      }
+      printf("Invalid input. Please enter again.\n");
+    }
+  }
+}
 
 void enterStudentInfo (Student *x, int n)
 {
   EnterFullName(n,x->fullName); 
-  chooseFieldStudy (x->fieldStudy);
-  // enterStudentCode (x->studentCode);
-  // enterClassName (x->className,n);
+  int* ng = chooseFieldStudy(x,n);
+  enterClassName (x->className,n);
+
+  for(int i = 0; i < n; i++) {
+    enterStudentCodes(x+i, ng[i], 1);
+  }
+  free(ng);
+  
   // enterBirthDate (x->birthDate);
 }
+
 void displayStudentInfo (Student x, int n)
 {
   for (int i = 0; i < n; i++) {
-  printf("\t%s\n",x.fullName[i]);
-  printf("\t%s\n",x.fieldStudy[i]);
+  printf("\t%s \t%s \t%s",x.fullName[i],x.fieldStudy[i],x.studentCode[i]);
+
   // printf("\t%s\n",x.className[i]);
-  // printf("\t%s\n",x.studentCode[i]);
   // printf("\t%s\n",x.birthDate[i]);
   }
 }
@@ -298,11 +368,11 @@ int main ()
     printf("\t| 1. Enter list of student\t\t\t\t|\n");
     printf("\t| 2. Display the list of student\t\t\t|\n");
     printf("\t| 3. Add new student information\t\t\t|\n");
-    printf("\t| 3. Search student\t\t\t\t\t|\n");
-    printf("\t| 4. Delete student\t\t\t\t\t|\n");
-    printf("\t| 5. Sort student\t\t\t\t\t|\n");
-    printf("\t| 6. Change the list of student\t\t\t\t|\n");
-    printf("\t| 7. Exit\t\t\t\t\t\t|\n");
+    printf("\t| 4. Search student\t\t\t\t\t|\n");
+    printf("\t| 5. Delete student's information\t\t\t|\n");
+    printf("\t| 6. Delete a student\t\t\t\t\t|\n");
+    printf("\t| 7. Sort student\t\t\t\t\t|\n");
+    printf("\t| 8. Exit\t\t\t\t\t\t|\n");
     printf("\t*-------------------------------------------------------*\n");
     printf("\n");
 
@@ -313,14 +383,21 @@ int main ()
     {
       case 1: // Enter list of student, including information.  
         checkValidNumberOfStudent (&n);
-          enterStudentInfo (&a, n);
+          enterStudentInfo (a, n);
           printf("\n");
         break;
       case 2:
-        printf("\tFull Name   |  Study Field   | ClassName    |   Student Code    |   Birth Date\n");
+        printf("\tFull Name   |  Study Field   |   ClassName    |   Student Code    |   Birth Date\n");
           displayStudentInfo (*a, n);
           printf("\n");
           break;
+      // case 3:
+      // case 4:
+      // case 5:
+      // case 6:
+      // case 7
+      // case 8:
+      //   return 0;
     }
   }
 }
