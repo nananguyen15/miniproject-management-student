@@ -40,9 +40,24 @@ void sortStudent();
 void printSortOptions();
 int validateStudentClass(const char *major, const char *class);
 int isStudentClassUnique(const char *class);
+void deleteAllStudent(char **name, char **class, char **major, char **studentCode, char **dateOfBirth, int *studentCount);
 
 int main()
 {
+    char **name = (char**)calloc(100,sizeof(char*));
+	char **class = (char**)calloc(100,sizeof(char*));
+	char **major = (char**)calloc(100,sizeof(char*));
+    char **studentCode = (char**)calloc(100,sizeof(char*));
+    char **dateOfBirth = (char**)calloc(100,sizeof(char*));
+        // Allocate memory for the strings
+    for(int i = 0; i < 100; i++) {
+        name[i] = (char*)calloc(100, sizeof(char));
+        class[i] = (char*)calloc(100, sizeof(char));
+        major[i] = (char*)calloc(100, sizeof(char));
+        studentCode[i] = (char*)calloc(100, sizeof(char));
+        dateOfBirth[i] = (char*)calloc(100, sizeof(char));
+    }
+
     printf("Welcome to the student management program!\n");
     do
     {
@@ -62,13 +77,17 @@ int main()
             deleteStudent();
             break;
         case 5:
+            deleteAllStudent(name,class,major,studentCode,dateOfBirth,&studentCount);
+            displayStudent();
+            printMenu();
+            break;    
+        case 6:
             sortStudent();
             break;
-        case 6:
-            printf("Change the list of student\n");
-            updateStudent();
-            break;
         case 7:
+            printf("Change the list of student\n");
+            break;
+        case 8:
             printf("Exit\n");
             break;
         default:
@@ -86,7 +105,8 @@ void printMenu()
     printf("\t| 2. Display the list of student\t\t\t|\n");
     printf("\t| 3. Search student\t\t\t\t\t|\n");
     printf("\t| 4. Delete student\t\t\t\t\t|\n");
-    printf("\t| 5. Sort student\t\t\t\t\t|\n");
+    printf("\t| 5. Delete all student\t\t\t\t\t|\n");
+    printf("\t| 6. Sort student\t\t\t\t\t|\n");
     printf("\t| 6. Change the list of student\t\t\t\t|\n");
     printf("\t| 7. Exit\t\t\t\t\t\t|\n");
     printf("\t*-------------------------------------------------------*\n");
@@ -207,34 +227,24 @@ void printMajorOptions()
     printf("Enter the number corresponding to the major: ");
 }
 
-int isStudentClassUnique(const char *class)
-{
-    for (int i = 0; i < studentCount; i++)
-    {
-        if (strcmp(studentList[i].class, class) == 0)
-            return 0; // student code already exists
-    }
-    return 1; // student code is unique
-}
-
 int validateStudentClass(const char *major, const char *class)
 {
     if (strcmp(major, "KTPM") == 0)
     {
         // major is 'KTPM', so student code should start with 'CE'
-        if (strncmp(class, "SE", 2) == 0 && strlen(class) == 6 && isStudentClassUnique(class))
+        if (strncmp(class, "SE", 2) == 0 && strlen(class) == 6)
             return 1; // valid and unique student code
     }
     else if (strcmp(major, "MS") == 0)
     {
         // major is 'MS', so student code should start with 'CS'
-        if (strncmp(class, "MD", 2) == 0 && strlen(class) == 6 && isStudentClassUnique(class))
+        if (strncmp(class, "DM", 2) == 0 && strlen(class) == 6)
             return 1; // valid and unique student code
     }
     else if (strcmp(major, "NNA") == 0)
     {
         // major is 'NNA', so student code should start with 'CA'
-        if (strncmp(class, "EL", 2) == 0 && strlen(class) == 6 && isStudentClassUnique(class))
+        if (strncmp(class, "EL", 2) == 0 && strlen(class) == 6)
             return 1; // valid and unique student code
     }
     return 0; // invalid or non-unique student code for the chosen major
@@ -538,12 +548,14 @@ void deleteStudent()
         printf("No students added yet.\n");
         return;
     }
+
     generateTableHead();
     for (int i = 0; i < studentCount; i++)
     {
         generateTableLine(i + 1, studentList[i].name, studentList[i].major, studentList[i].class, studentList[i].studentCode, studentList[i].dateOfBirth);
     }
     generateTableTail();
+
     int id;
     printf("Enter the ID of the student to delete: ");
     scanf("%d", &id);
@@ -665,43 +677,19 @@ void printSearchOptions()
     printf("4. Student code\n");
     printf("5. Date of birth\n");
 }
-
-void updateStudent(struct Student* student) {
-    int choice;
-    char buffer[100];
-    char newClass[100];
-    char newName [100];
-    char newStudentCode [100];
-    char newBirthday [100];
-    printf("Which field do you want to update?\n");
-    printf("1. Name\n2. Class\n3. Student Code\n4. Date of Birth\n");
-    printf("Enter your choice: ");
-    scanf("%d", &choice);
-    getchar();  // To consume the newline character after the number input
-
-    printf("Enter the new value: ");
-    fgets(buffer, sizeof(buffer), stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';  // Remove the newline character at the end
-
-    switch(choice) {
-         case 1:
-            strncpy(newName, buffer, sizeof(newName));  // Copy buffer to newClass
-            newStudentCode[sizeof(newName) - 1] = '\0';  // Ensure null-termination
-            strncpy(student->name, newName, sizeof(student->name));  // Copy newClass to student->class
-        case 2:
-            strncpy(newClass, buffer, sizeof(newClass));  // Copy buffer to newClass
-            newClass[sizeof(newClass) - 1] = '\0';  // Ensure null-termination
-            strncpy(student->class, newClass, sizeof(student->class));  // Copy newClass to student->class
-        case 3:
-            strncpy(newStudentCode, buffer, sizeof(newClass));  // Copy buffer to newClass
-            newStudentCode[sizeof(newClass) - 1] = '\0';  // Ensure null-termination
-            strncpy(student->studentCode, newStudentCode, sizeof(student->studentCode));  // Copy newClass to student->class
-        case 4:
-            strncpy(newBirthday, buffer, sizeof(newBirthday));  // Copy buffer to newClass
-            newBirthday[sizeof(newClass) - 1] = '\0';  // Ensure null-termination
-            strncpy(student->dateOfBirth, newBirthday, sizeof(student->dateOfBirth));  // Copy newClass to student->class
-        default:
-            printf("Invalid choice.\n");
-            break;
-    }
+/*
+void deleteAllStudent(char *name[], char *class[], char *major[], char *studentCode[], char *dateOfBirth[], int *studentCount)
+{
+    (*studentCount) = 0;
+    char **Names_ = realloc(name, 0 * sizeof(char *));
+    char **Classes_ = realloc(class, 0 * sizeof(char *));
+    char **Majors_ = realloc(major, 0 * sizeof(char *));
+    char **StudentCodes_ = realloc(studentCode, 0 * sizeof(char *));
+    char **DateOfBirths_ = realloc(dateOfBirth, 0 * sizeof(char *));
+    free(Names_);
+    free(Classes_);
+    free(Majors_);
+    free(StudentCodes_);
+    free(DateOfBirths_);
 }
+*/
