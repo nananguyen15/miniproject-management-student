@@ -1,3 +1,11 @@
+//MEMBER INFORMATION:
+// Nguyen Thi Nha Tuyen (leader) - CE190631
+// Phan Hong Tai - CE181490
+// Tran Khanh Duy - CE180366
+// Huynh Ngoc Diem Quynh - 180806
+// Pham Kha Vy - CE182254
+// Dong Minh Quang - CE182250
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -22,6 +30,7 @@ struct Student studentList[MAX_STUDENTS]; // create an array to store students
 int studentCount = 0;                     // keep track of the number of students
 int input;
 int n;
+int ID = 1;
 
 void printMenu();
 void addStudent();
@@ -41,6 +50,10 @@ void printSortOptions();
 int validateStudentClass(const char *major, const char *class);
 int isStudentClassUnique(const char *class);
 void deleteAllStudent(char **name, char **class, char **major, char **studentCode, char **dateOfBirth, int *studentCount);
+int validateStudentClass(const char *major, const char *classe);
+int isStudentClassUnique(const char *class);
+void ReadFile(int*studentCount,int*ID,char*name[],int*class[],int*major[],char*studentCode[],char*dateOfBirth[]);
+void WriteFile(int*studentCount,int*ID,char*name[],int*class,int*major,char*studentCode[],char*dateOfBirth);
 
 int main()
 {
@@ -58,9 +71,10 @@ int main()
         dateOfBirth[i] = (char*)calloc(100, sizeof(char));
     }
 
-    printf("Welcome to the student management program!\n");
+    printf("\n\n\n\n\n\n\n\n\t\tWELCOME TO THE STUDENT MANAGEMENT PROGRAM!\n");
     do
     {
+        struct Student student[n];
         printMenu();
         switch (input)
         {
@@ -88,16 +102,21 @@ int main()
             sortStudent();
             break;
         case 7:
-            printf("Change the list of student\n");
-            updateStudent();
+            printf("Edit the list of student\n");
+            updateStudent(n, student);
             break;
         case 8:
-            printf("Exit\n");
+            printf("Write to the text file\n");
+            WriteFile(studentCount,ID, name,class,major,studentCode,dateOfBirth);
             break;
+        case 9:
+            printf("The program will exit !!!\n");
+            exit(1);
         default:
             printf("Invalid input\n");
+            break;
         }
-    } while (input != 8); // continue the loop until the user chooses to exit (option 7)
+    } while (input != 9); // continue the loop until the user chooses to exit (option 7)
 
     return 0;
 }
@@ -112,7 +131,8 @@ void printMenu()
     printf("\t| 5. Delete all student\t\t\t\t\t|\n");
     printf("\t| 6. Sort student\t\t\t\t\t|\n");
     printf("\t| 7. Change the list of student\t\t\t\t|\n");
-    printf("\t| 8. Exit\t\t\t\t\t\t|\n");
+    printf("\t| 8. Write to the text file\t\t\t\t|\n");
+    printf("\t| 9. Exit\t\t\t\t\t\t|\n");
     printf("\t*-------------------------------------------------------*\n");
     printf("\n");
     printf("Enter your choice: ");
@@ -223,12 +243,13 @@ void addStudent()
 
 void printMajorOptions()
 {
-    printf("\n\t*-------List of the majors------*\n");
-    printf("\t| 1. KTPM (Ky Thuat Phan Mem)\t|\n");
-    printf("\t| 2. MS (Maketing So)\t\t|\n");
-    printf("\t| 3. NNA (Ngon Ngu Anh)\t\t|\n");
-    printf("\t*-------------------------------*\n");
+    printf("\n\t\t\t*--------List of the majors--------*\n");
+    printf("\t\t\t|   1. KTPM (Ky Thuat Phan Mem)\t   |\n");
+    printf("\t\t\t|   2. MS (Maketing So)\t\t   |\n");
+    printf("\t\t\t|   3. NNA (Ngon Ngu Anh)\t   |\n");
+    printf("\t\t\t*----------------------------------*\n");
     printf("Enter the number corresponding to the major: ");
+    printf("\n");
 }
 
 int validateStudentClass(const char *major, const char *class)
@@ -696,34 +717,70 @@ void deleteAllStudent(char *name[], char *class[], char *major[], char *studentC
     free(DateOfBirths_);
 }
 
-void updateStudent(int n, Student *students)
-{
-    if (n == 0)
-    {
+void updateStudent(int n, struct Student *students) {
+    if (n == 0) {
         printf("No students added yet.\n");
         return;
     }
-
     int studentIndex;
     printf("Enter the index of the student to update (1 to %d): ", n);
     scanf("%d", &studentIndex);
 
-    if (studentIndex < 1 || studentIndex > n)
-    {
+    if (studentIndex < 1 || studentIndex > n) {
         printf("Invalid student index.\n");
         return;
     }
-    Student *studentToUpdate = &students[studentIndex - 1];
-    printf("Enter new information for student %d:\n", studentIndex);
-    
-    // Call functions to update specific fields (e.g., name, class, code, etc.)
-    // You can add or remove fields based on your structure and requirements
 
-    EnterFullName(1, studentToUpdate->fullName);
-    int* ng = chooseFieldStudy(studentToUpdate, 1);
-    enterClassName(studentToUpdate, 1);
-    enterStudentCodes(studentToUpdate, ng[0], 1);
-    free(ng);
+    struct Student *studentToUpdate = &students[studentIndex - 1];
+    printf("Enter new information for student %d:\n", studentIndex);
+
+    // Call functions to update specific fields
+    printf("Enter full name: ");
+    scanf("%s", studentToUpdate->name);
+
+    // Add or modify other fields as needed
 
     printf("Student information updated successfully!\n");
 }
+void ReadFile(int*studentCount,int*ID,char*name[],int*class[],int*major[],char*studentCode[],char*dateOfBirth[])
+{
+    char getName[20], getMajor[20], getClass[20], getStudentCode[20], getDateOfBirth[20];
+    int id;
+    FILE* fp;
+    fp = fopen("StudentInformation.txt", "r");
+    if(fp) {
+        while(fscanf(fp, "%10d %20[^\n] %20[^\n] %20[^\n] %20[^\n] %10[^\n]\n", &id, getName, getMajor, getClass, getStudentCode, getDateOfBirth) == 6) {
+            name[*studentCount] = malloc(strlen(getName) + 1);
+            major[*studentCount] = malloc(strlen(getMajor) + 1);
+            class[*studentCount] = malloc(strlen(getClass) + 1);
+            studentCode[*studentCount] = malloc(strlen(getStudentCode) + 1);
+            dateOfBirth[*studentCount] = malloc(strlen(getDateOfBirth) + 1);
+            ID[*studentCount] = id;
+            strcpy(name[*studentCount], getName);
+            strcpy(major[*studentCount], getMajor);
+            strcpy(class[*studentCount], getClass);
+            strcpy(studentCode[*studentCount], getStudentCode);
+            strcpy(dateOfBirth[*studentCount], getDateOfBirth);
+            (*studentCount)++;
+            /* Read until end of file */
+            if(feof(fp)) {
+                break;
+            }
+        }
+    }
+    fclose(fp);
+}
+void WriteFile(int*studentCount,int*ID,char*name[],int*class,int*major,char*studentCode[],char*dateOfBirth)
+{
+    getchar();
+	char fName[26];
+	printf("Enter FileName: ");
+	gets(fName);
+	FILE* fp = fopen(fName, "w");
+	int i;
+	for(i = 0; i < *studentCount; i++) {
+		fprintf(fp, "%-10d %-20s %-10d %-10d %-20s %-20s \n",ID[i], name[i], major[i], class[i], studentCode[i], dateOfBirth[i]);
+	}
+	fclose(fp);
+}
+
