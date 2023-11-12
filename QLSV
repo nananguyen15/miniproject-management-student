@@ -5,6 +5,7 @@
 #include <math.h>
 #include <limits.h>
 #include <time.h>
+#include <errno.h>
 
 #define MAX_STUDENTS 100 // define the maximum number of students to avoid magic numbers
 
@@ -690,5 +691,3 @@ void printSearchOptions()
     printf("4. Student code\n");
     printf("5. Date of birth\n");
 }
-
-
