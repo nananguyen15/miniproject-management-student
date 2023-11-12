@@ -38,8 +38,7 @@ void searchStudent();
 void deleteStudent();
 void sortStudent();
 void printSortOptions();
-void checkValidNumberOfStudent (int *n);
-int validateStudentClass(const char *major, const char *classe);
+int validateStudentClass(const char *major, const char *class);
 int isStudentClassUnique(const char *class);
 
 int main()
@@ -67,6 +66,7 @@ int main()
             break;
         case 6:
             printf("Change the list of student\n");
+            updateStudent();
             break;
         case 7:
             printf("Exit\n");
@@ -98,11 +98,20 @@ void printMenu()
 
 void addStudent()
 {
-    checkValidNumberOfStudent (&n);
+    if (studentCount < MAX_STUDENTS)
+    {
+        char name[100];
         struct Student newStudent;
-        for (int i = 0; i < n; i++) {
-            EnterFullName (i,newStudent.name);
-        
+            while (1) {
+                printf("Enter student full name: ");
+                fgets(name, sizeof(name), stdin); // Get the name from user input
+                name[strlen(name)-1] = '\0'; // Remove the newline character at the end
+                if (isValidName(name) == 1) {
+                    strncpy(newStudent.name, name, sizeof(newStudent.name));
+                    break;
+                }
+            }
+            
         int majorChoice;
         while (1)
         {
@@ -136,44 +145,36 @@ void addStudent()
             strcpy(newStudent.major, "NNA");
             break;
         }
-        
+
         printf("\n**NOTE:\n");
-          printf("- If student's major is KTPM (Ky Thuat Phan Mem), 2 first character of student's class will be SE.\n");
-          printf("- If student's major is MS (Maketing So), 2 first character of student's class will be DM.\n");
-          printf("- If student's major is NNA (Ngon Ngu Anh), 2 first character of student's class will be EL.\n");
-          printf("- student's class must have 6 characters.\n");
+            printf("- If student's major is KTPM (Ky Thuat Phan Mem), 2 first character of student's class will be SE.\n");
+            printf("- If student's major is MS (Maketing So), 2 first character of student's class will be DM.\n");
+            printf("- If student's major is NNA (Ngon Ngu Anh), 2 first character of student's class will be EL.\n");
+            printf("- student's class must have 6 characters.\n");
         while (1)
         {
             printf("\nEnter student's class: ");
             scanf("%s", newStudent.class);
             if (validateStudentClass(newStudent.major, newStudent.class))
-            {
                 break; // valid and unique student code
-            }
             else
-            {
                 printf("Invalid or non-unique student class for the chosen major. Please enter a valid and unique student class.\n\n");
-            }
         }
 
         // validate and input student code until a valid, unique format is entered
-         printf("\n**NOTE:\n");
-          printf("- If student's major is KTPM (Ky Thuat Phan Mem), 2 first character of student code will be CE.\n");
-          printf("- If student's major is MS (Maketing So), 2 first character of student code will be CS.\n");
-          printf("- If student's major is NNA (Ngon Ngu Anh), 2 first character of student code will be CA.\n");
-          printf("- Student code must have 8 characters.\n");
+        printf("\n**NOTE:\n");
+            printf("- If student's major is KTPM (Ky Thuat Phan Mem), 2 first character of student code will be CE.\n");
+            printf("- If student's major is MS (Maketing So), 2 first character of student code will be CS.\n");
+            printf("- If student's major is NNA (Ngon Ngu Anh), 2 first character of student code will be CA.\n");
+            printf("- Student code must have 8 characters.\n");
         while (1)
         {
             printf("\nEnter student code: ");
             scanf("%s", newStudent.studentCode);
             if (validateStudentCode(newStudent.major, newStudent.studentCode))
-            {
                 break; // valid and unique student code
-            }
             else
-            {
                 printf("Invalid or non-unique student code for the chosen major. Please enter a valid and unique student code.\n\n");
-            }
         }
 
         // validate and input date of birth until a valid format is entered
@@ -188,15 +189,12 @@ void addStudent()
             }
             else
                 printf("Invalid date format, values, or future date. Please enter the date in 'dd/mm/yyyy' format.\n\n");
-            
         }
-
         // add the new student to the array
         studentList[studentCount] = newStudent;
         studentCount++;
-        }
         printf("Student added successfully!\n");
-        
+    }
 }
 
 void printMajorOptions()
@@ -275,50 +273,10 @@ int validateStudentCode(const char *major, const char *studentCode)
     return 0; // invalid or non-unique student code for the chosen major
 }
 
-void checkValidNumberOfStudent (int *n) 
-{
-  while(1)
-  {
-    char input[1000];
-    printf ("Enter the number of students: ");
-    fgets (input,1000,stdin);
-    input[strlen (input) - 1] = '\0';
-
-    char *end;
-    long long temp = strtol (input, &end, 10);
-    if (end != input + strlen(input)) 
-    {
-      printf("%s is not a valid integer\n\n", input);
-      continue;
-    }
-    else 
-    {
-      int i;
-      for (i = 0; i < strlen(input); i++)
-        if (i == 0 && input[i] == '-') continue;
-      if (i < strlen(input)) continue;  // If a non-digit character was found, continue with the next iteration
-    }
-    if (temp <= 0)
-    {
-      printf("The number of students must be greater than 0.\n\n");
-      continue;
-    }
-    else if (errno == ERANGE) 
-    {
-      printf("The number you entered is too large.\nPlease enter a number less then or equal to %d.\n\n",INT_MAX);
-      continue;
-    }
-    else 
-    {
-      *n = (int)temp;
-      break;
-    }
-  }
-}
 
 int isValidName (char name[])
 {
-  //Kiem tra xem co nhan phim enter khong 
+  //Kiem tra xem co nhan phim enter khong
   if (strlen(name) == 0 || strspn(name, " ") == strlen(name))
   {
     printf("Name cannot be empty. Please enter again !\n\n");
@@ -360,19 +318,6 @@ int isValidName (char name[])
   return 1;
 }
 
-void EnterFullName (int i, char name[][100])
-{
-  printf("Enter student fullName: \n");
-    while (1) {
-      printf("Student %d: ",i+1);
-      fgets(name[i], sizeof(name[i]), stdin);
-      name[i][strcspn(name[i], "\n")] = 0; // remove the newline character at the end
-      if (isValidName(name[i]) == 1) {
-        break;
-      }
-    }
-}
-
 int isLeapYear(int year)
 {
     if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
@@ -409,7 +354,7 @@ int validateDateOfBirth(const char *dateOfBirth)
                 current_date = localtime(&current_time);
 
                 if (year < (current_date->tm_year + 1900) || (year == (current_date->tm_year + 1900) &&
-                                                            (month < (current_date->tm_mon + 1) || 
+                                                            (month < (current_date->tm_mon + 1) ||
                                                             (month == (current_date->tm_mon + 1) &&
                                                             day <= current_date->tm_mday))))
                 {
@@ -420,7 +365,52 @@ int validateDateOfBirth(const char *dateOfBirth)
     }
     return 0; // invalid date format or values
 }
+void sortStudentByDateOfBirth()
+{
+    if (studentCount == 0)
+    {
+        printf("No students added yet.\n");
+        return;
+    }
 
+    // create a temporary list of students for sorting
+    struct Student tempStudentList[MAX_STUDENTS];
+    for (int i = 0; i < studentCount; i++)
+        tempStudentList[i] = studentList[i];
+
+    // perform sorting based on date of birth
+    int swapped;
+    struct Student temp;
+
+    do
+    {
+        swapped = 0;
+        for (int i = 0; i < studentCount - 1; i++)
+        {
+            // Convert date of birth strings to integers for comparison
+            int day1, month1, year1, day2, month2, year2;
+            sscanf(tempStudentList[i].dateOfBirth, "%d/%d/%d", &day1, &month1, &year1);
+            sscanf(tempStudentList[i + 1].dateOfBirth, "%d/%d/%d", &day2, &month2, &year2);
+
+            if (year1 > year2 || (year1 == year2 && (month1 > month2 || (month1 == month2 && day1 > day2))))
+            {
+                temp = tempStudentList[i];
+                tempStudentList[i] = tempStudentList[i + 1];
+                tempStudentList[i + 1] = temp;
+                swapped = 1;
+            }
+        }
+    } while (swapped);
+
+    // print the sorted results
+    printf("Students sorted by date of birth:\n");
+    generateTableHead();
+    for (int i = 0; i < studentCount; i++)
+    {
+        generateTableLine(i + 1, tempStudentList[i].name, tempStudentList[i].major, tempStudentList[i].class, tempStudentList[i].studentCode, tempStudentList[i].dateOfBirth);
+    }
+    generateTableTail();
+}
 void displayStudent()
 {
     if (studentCount == 0)
@@ -433,11 +423,6 @@ void displayStudent()
         generateTableHead();
         for (int i = 0; i < studentCount; i++)
         {
-            // printf("Student %d:\n", i + 1);
-            // printf("Name: %s\n", studentList[i].name);
-            // printf("Major: %s\n", studentList[i].major);
-            // printf("Student Code: %s\n", studentList[i].studentCode);
-            // printf("Date of Birth: %s\n", studentList[i].dateOfBirth);
             generateTableLine(i + 1, studentList[i].name, studentList[i].major, studentList[i].class, studentList[i].studentCode, studentList[i].dateOfBirth);
         }
         generateTableTail();
@@ -453,7 +438,7 @@ void generateTableHead()
 
 void generateTableLine(int id, char *name, char *major, char *class, char *studentCode, char *dateOfBirth)
 {
-    printf("| %2d   | %-18s | %-14s | %-14s | %-14s | %-14s |\n", id, name, major, class, studentCode, dateOfBirth);
+    printf("| %2d   | %-18s | %-14s | %-14s | %-14s | %-14s  |\n", id, name, major, class, studentCode, dateOfBirth);
 }
 
 void generateTableTail()
@@ -516,7 +501,7 @@ void searchStudent()
                 }
             generateTableLine(i + 1, studentList[i].name, studentList[i].major, studentList[i].class, studentList[i].studentCode, studentList[i].dateOfBirth);
             }
-            break;    
+            break;
         case 4:
                 if (strstr(studentList[i].studentCode, searchQuery) != NULL) {
                 if (!found) {
@@ -634,19 +619,8 @@ void sortStudent()
                 compareResult = strcmp(tempStudentList[i].studentCode, tempStudentList[i + 1].studentCode);
                 break;
             case 5:
-                // Compare the full date of birth (dd/mm/yyyy)
-                int day1, month1, year1;
-                int day2, month2, year2;
-                sscanf(tempStudentList[i].dateOfBirth, "%d/%d/%d", &day1, &month1, &year1);
-                sscanf(tempStudentList[i + 1].dateOfBirth, "%d/%d/%d", &day2, &month2, &year2);
+                sortStudentByDateOfBirth();
 
-                if (year1 != year2)
-                    compareResult = year1 - year2;
-                else if (month1 != month2)
-                    compareResult = month1 - month2;
-                else
-                    compareResult = day1 - day2;
-                break;
             default:
                 printf("Invalid sorting option.\n");
                 return;
@@ -690,4 +664,44 @@ void printSearchOptions()
     printf("3. Class\n");
     printf("4. Student code\n");
     printf("5. Date of birth\n");
+}
+
+void updateStudent(struct Student* student) {
+    int choice;
+    char buffer[100];
+    char newClass[100];
+    char newName [100];
+    char newStudentCode [100];
+    char newBirthday [100];
+    printf("Which field do you want to update?\n");
+    printf("1. Name\n2. Class\n3. Student Code\n4. Date of Birth\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    getchar();  // To consume the newline character after the number input
+
+    printf("Enter the new value: ");
+    fgets(buffer, sizeof(buffer), stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';  // Remove the newline character at the end
+
+    switch(choice) {
+         case 1:
+            strncpy(newName, buffer, sizeof(newName));  // Copy buffer to newClass
+            newStudentCode[sizeof(newName) - 1] = '\0';  // Ensure null-termination
+            strncpy(student->name, newName, sizeof(student->name));  // Copy newClass to student->class
+        case 2:
+            strncpy(newClass, buffer, sizeof(newClass));  // Copy buffer to newClass
+            newClass[sizeof(newClass) - 1] = '\0';  // Ensure null-termination
+            strncpy(student->class, newClass, sizeof(student->class));  // Copy newClass to student->class
+        case 3:
+            strncpy(newStudentCode, buffer, sizeof(newClass));  // Copy buffer to newClass
+            newStudentCode[sizeof(newClass) - 1] = '\0';  // Ensure null-termination
+            strncpy(student->studentCode, newStudentCode, sizeof(student->studentCode));  // Copy newClass to student->class
+        case 4:
+            strncpy(newBirthday, buffer, sizeof(newBirthday));  // Copy buffer to newClass
+            newBirthday[sizeof(newClass) - 1] = '\0';  // Ensure null-termination
+            strncpy(student->dateOfBirth, newBirthday, sizeof(student->dateOfBirth));  // Copy newClass to student->class
+        default:
+            printf("Invalid choice.\n");
+            break;
+    }
 }
