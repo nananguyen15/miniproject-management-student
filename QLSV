@@ -77,15 +77,19 @@ int main()
             deleteStudent();
             break;
         case 5:
-            deleteAllStudent(name,class,major,studentCode,dateOfBirth,&studentCount);
-            displayStudent();
-            printMenu();
+            if (studentCount == 0) {
+            printf("No students to delete.\n");
+            } else {
+              deleteAllStudent(name,class,major,studentCode,dateOfBirth,&studentCount);
+              printf("All students have been deleted.\n");
+            }
             break;    
         case 6:
             sortStudent();
             break;
         case 7:
             printf("Change the list of student\n");
+            updateStudent();
             break;
         case 8:
             printf("Exit\n");
@@ -93,7 +97,7 @@ int main()
         default:
             printf("Invalid input\n");
         }
-    } while (input != 7); // continue the loop until the user chooses to exit (option 7)
+    } while (input != 8); // continue the loop until the user chooses to exit (option 7)
 
     return 0;
 }
@@ -107,8 +111,8 @@ void printMenu()
     printf("\t| 4. Delete student\t\t\t\t\t|\n");
     printf("\t| 5. Delete all student\t\t\t\t\t|\n");
     printf("\t| 6. Sort student\t\t\t\t\t|\n");
-    printf("\t| 6. Change the list of student\t\t\t\t|\n");
-    printf("\t| 7. Exit\t\t\t\t\t\t|\n");
+    printf("\t| 7. Change the list of student\t\t\t\t|\n");
+    printf("\t| 8. Exit\t\t\t\t\t\t|\n");
     printf("\t*-------------------------------------------------------*\n");
     printf("\n");
     printf("Enter your choice: ");
@@ -632,7 +636,7 @@ void sortStudent()
                 break;
             case 5:
                 sortStudentByDateOfBirth();
-
+                break;
             default:
                 printf("Invalid sorting option.\n");
                 return;
@@ -677,7 +681,6 @@ void printSearchOptions()
     printf("4. Student code\n");
     printf("5. Date of birth\n");
 }
-/*
 void deleteAllStudent(char *name[], char *class[], char *major[], char *studentCode[], char *dateOfBirth[], int *studentCount)
 {
     (*studentCount) = 0;
@@ -692,4 +695,35 @@ void deleteAllStudent(char *name[], char *class[], char *major[], char *studentC
     free(StudentCodes_);
     free(DateOfBirths_);
 }
-*/
+
+void updateStudent(int n, Student *students)
+{
+    if (n == 0)
+    {
+        printf("No students added yet.\n");
+        return;
+    }
+
+    int studentIndex;
+    printf("Enter the index of the student to update (1 to %d): ", n);
+    scanf("%d", &studentIndex);
+
+    if (studentIndex < 1 || studentIndex > n)
+    {
+        printf("Invalid student index.\n");
+        return;
+    }
+    Student *studentToUpdate = &students[studentIndex - 1];
+    printf("Enter new information for student %d:\n", studentIndex);
+    
+    // Call functions to update specific fields (e.g., name, class, code, etc.)
+    // You can add or remove fields based on your structure and requirements
+
+    EnterFullName(1, studentToUpdate->fullName);
+    int* ng = chooseFieldStudy(studentToUpdate, 1);
+    enterClassName(studentToUpdate, 1);
+    enterStudentCodes(studentToUpdate, ng[0], 1);
+    free(ng);
+
+    printf("Student information updated successfully!\n");
+}
