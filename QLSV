@@ -243,13 +243,12 @@ void addStudent()
 
 void printMajorOptions()
 {
-    printf("\n\t\t\t*--------List of the majors--------*\n");
-    printf("\t\t\t|   1. KTPM (Ky Thuat Phan Mem)\t   |\n");
-    printf("\t\t\t|   2. MS (Maketing So)\t\t   |\n");
-    printf("\t\t\t|   3. NNA (Ngon Ngu Anh)\t   |\n");
-    printf("\t\t\t*----------------------------------*\n");
+    printf("\n\t\t*--------List of the majors--------*\n");
+    printf("\t\t|   1. KTPM (Ky Thuat Phan Mem)\t   |\n");
+    printf("\t\t|   2. MS (Maketing So)\t\t   |\n");
+    printf("\t\t|   3. NNA (Ngon Ngu Anh)\t   |\n");
+    printf("\t\t*----------------------------------*\n");
     printf("Enter the number corresponding to the major: ");
-    printf("\n");
 }
 
 int validateStudentClass(const char *major, const char *class)
